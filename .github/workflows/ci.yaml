@@ -34,5 +34,7 @@ jobs:
       run: playwright install
 
     - name: Run tests
-      if: "github.event.inputs.deployment_target == 'Run tests'"
+      if: >
+        github.event_name == 'schedule' ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_target == 'Run tests')
       run: pytest test_init.py -v
