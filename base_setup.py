@@ -5,7 +5,7 @@ from page_elements import PageElementsGames
 class BaseSetUp(PageElementsGames):
 
     def __init__(self, playwright: Playwright):
-        self.browser = playwright.chromium.launch(headless=False,
+        self.browser = playwright.chromium.launch(headless=True,
                                                   proxy={
                                                       'server': 'http://138.197.150.103:8090',
                                                       'username': 'kbc',
@@ -13,7 +13,7 @@ class BaseSetUp(PageElementsGames):
                                                   })
         self.context = self.browser.new_context()
         self.page = self.context.new_page()
-
+        self._generated_email = None
     def open_site(self):
         try:
             self.page.goto('https://tombriches.com/')
