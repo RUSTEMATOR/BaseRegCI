@@ -3,14 +3,14 @@ import re
 from base_setup import BaseSetUp
 from playwright.sync_api import Playwright, expect, sync_playwright
 from page_elements import PageElementsGames, PageElementsTabs
+import random
+import string
 
 
 class Generator():
     @staticmethod
     # Function to generate a random email
     def generate_random_email():
-        import random
-        import string
         random_numbers = ''.join(random.choice(string.digits) for _ in range(5))
         random_word = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
         automaton = "automaton_"
@@ -18,6 +18,11 @@ class Generator():
 
 
 class Registration(BaseSetUp, PageElementsTabs, Generator):
+
+    def handler(self) -> None:
+        self.page.locator("path").first.click()
+
+
 
     @property
     def generated_email(self):
@@ -37,12 +42,11 @@ class Registration(BaseSetUp, PageElementsTabs, Generator):
     def press_sign_up_button(self):
         sign_up_button = self.page.get_by_role("button", name="Sign up")
         try:
-            sign_up_button.click()
+            sign_up_button.click(timeout=99999)
 
         except Exception as e:
             raise AssertionError from e
-        finally:
-            self.check_18_years()
+
 
 
 
@@ -54,8 +58,7 @@ class Registration(BaseSetUp, PageElementsTabs, Generator):
         except Exception as e:
 
             raise AssertionError from e
-        finally:
-            self.fill_reg_info()
+
 
 
     def fill_reg_info(self):
@@ -76,8 +79,7 @@ class Registration(BaseSetUp, PageElementsTabs, Generator):
         except Exception as e:
 
             raise AssertionError from e
-        finally:
-            self.press_final_sign_up_button()
+
 
     def press_final_sign_up_button(self):
         sign_up_button = self.page.locator("form").get_by_role("button", name="Sign up")
@@ -89,15 +91,16 @@ class Registration(BaseSetUp, PageElementsTabs, Generator):
         except Exception as e:
 
             raise AssertionError from e
-        finally:
-            expect(self.page.locator('.deposit-card')).to_be_visible(timeout=90000)
-            self.refresh_page()
+
 
     def refresh_page(self):
         try:
             self.page.reload()
-        finally:
-            self.enter_account()
+
+        except Exception as e:
+            raise AssertionError from e
+
+
 
     def enter_account(self):
         account_button = self.page.get_by_role("button", name="Account")
@@ -110,8 +113,7 @@ class Registration(BaseSetUp, PageElementsTabs, Generator):
 
             raise AssertionError from e
 
-        finally:
-            self.check_if_registered()
+
 
     def check_if_registered(self):
         welcome_message = self.page.locator(".text-map_welcome")

@@ -1,11 +1,12 @@
 from playwright.sync_api import Page, Playwright, expect
 from page_elements import PageElementsGames
+import time
 
 
 class BaseSetUp(PageElementsGames):
 
     def __init__(self, playwright: Playwright):
-        self.browser = playwright.chromium.launch(headless=True,
+        self.browser = playwright.chromium.launch(headless=False,
                                                   proxy={
                                                       'server': 'http://138.197.150.103:8090',
                                                       'username': 'kbc',
@@ -14,6 +15,13 @@ class BaseSetUp(PageElementsGames):
         self.context = self.browser.new_context()
         self.page = self.context.new_page()
         self._generated_email = None
+
+
+    def handler(self):
+        self.page.reload()
+        time.sleep(5)
+
+
     def open_site(self):
         try:
             self.page.goto('https://tombriches.com/')
