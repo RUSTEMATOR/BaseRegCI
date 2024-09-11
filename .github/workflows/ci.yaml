@@ -38,3 +38,12 @@ jobs:
         github.event_name == 'schedule' ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.deployment_target == 'Run tests')
       run: pytest test_init.py -v
+
+
+    - name: send default message
+      if: failure()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: "API tests failed. Better check TR!!! "
